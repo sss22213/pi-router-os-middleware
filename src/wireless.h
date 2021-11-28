@@ -27,7 +27,7 @@ struct _channel_freq {
 
 struct _wireless_iface_iwlist_node {
     struct _channel_freq current_channel_freq;
-    struct _queue *ptr_support_channel_freq;
+    struct _queue ptr_support_channel_freq;
     /* MB/s */
     float bitrate;
     /* dbm */

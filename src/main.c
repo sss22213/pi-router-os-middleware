@@ -1,33 +1,46 @@
 #include <stdio.h>
+#include <pthread.h>
 #include "list.h"
 #include "queue.h"
 #include "tree.h"
 #include "wireless.h"
+#include "console.h"
+#include "transfer_socket.h"
 
-struct _test {
-    int val;
-    struct _node node;
-};
-
-struct my_rb_tree_node {
-    int val;
-    struct _rb_leaf_node rb_leaf_node;
-};
-
-bool cmp_rb_tree(struct _rb_leaf_node *rb_leaf_node_1, struct _rb_leaf_node *rb_leaf_node_2)
-{
-    int a_value = CONTAINER_OF(rb_leaf_node_1, struct my_rb_tree_node, rb_leaf_node)->val;
-    int b_value = CONTAINER_OF(rb_leaf_node_2, struct my_rb_tree_node, rb_leaf_node)->val;
-    if (a_value > b_value) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
+/**
+ * @brief Main function
+ * 
+ * usage: ./main [option] -i [interface number]
+ * [option]:
+ *      avail_channel
+ *      avail_freq
+ *      cur_channel
+ *      cur_freq
+ *      cur_bitrate
+ *      cur_txpower
+ *      
+ * @param argc 
+ * @param argv 
+ * @return int
+ */
 
 int main(int argc, char **argv)
 {
-    struct _wireless_iface_iwlist_node *new_wireless_node = _find_support_freq_channel(4);
+    char str[] = "avail_channel -i 2";
+    console_read(str);
+    // Initialize socket
+    //INIT_TRANSFER_SOCKET(new_socket, 8232);
+
+    //while(1);
+
+    //struct _wireless_iface_iwlist_node *new_wireless_node = _find_support_freq_channel(2);
+    /*
+    struct _node *ptr_node = NULL;
+    QUEUE_FOR_EACH(ptr_node, &new_wireless_node->ptr_support_channel_freq) {
+        printf("%d\n", CONTAINER_OF(ptr_node, struct _channel_freq, iface_node)->channel);
+        printf("%e\n", CONTAINER_OF(ptr_node, struct _channel_freq, iface_node)->freq);
+    }
+    */
 
     return 0;
 }

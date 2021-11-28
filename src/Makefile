@@ -3,7 +3,7 @@ CFLAGS := -g -std=gnu11 -Werror
 
 all: clean main
 
-main: main.o list.o queue.o tree.o wireless.o
+main: main.o list.o queue.o tree.o wireless.o console.o transfer_socket.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 main.o: main.c
@@ -22,6 +22,12 @@ tree.o: tree.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 wireless.o: wireless.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+console.o: console.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+transfer_socket.o: transfer_socket.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 clean:

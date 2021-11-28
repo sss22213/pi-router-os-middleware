@@ -60,35 +60,43 @@ static inline float string_to_float(char *str)
 struct _wireless_iface_iwlist_node *_find_support_freq_channel(int iface_number)
 {
     FILE *ptr_cmd_active_wlan_lookup = NULL;
+    FILE *ptr_cmd_active_wlan_lookup1 = NULL;
 
     char look_cmd[IFACE_INFO] = {0};
-    memset(look_cmd, 0, sizeof(look_cmd));
+    char look_cmd1[IFACE_INFO] = {0};
 
     char iface[IFACE_INFO] = {0};
-    memset(iface, 0, sizeof(iface));
+    char iface1[IFACE_INFO] = {0};
+
+    struct _channel_freq *ptr_channel_freq = NULL;
 
     struct _wireless_iface_iwlist_node *wireless_iface_iwlist_node = \
         (struct _wireless_iface_iwlist_node*)calloc(1, sizeof(struct _wireless_iface_iwlist_node));
+
+    // Initialize frequency,channel queue
+    struct _list *new_list = (struct _list*)calloc(11, sizeof(struct _list));
+    wireless_iface_iwlist_node->ptr_support_channel_freq.ptr_queue_head = new_list;
 
     /* Frequency */
     sprintf(look_cmd, IFACE_LOOKUP_SUPPORT_FREQ, iface_number);
 
     ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
 
-    while (fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup)) {
-        printf("%e\n", string_to_float(iface));
-    }
-
     /* Channel */
-    memset(look_cmd, 0, sizeof(look_cmd) / sizeof(look_cmd[0]));
-    sprintf(look_cmd, IFACE_LOOKUP_SUPPORT_CHANNEL, iface_number);
+    memset(look_cmd1, 0, sizeof(look_cmd1) / sizeof(look_cmd1[0]));
+    sprintf(look_cmd1, IFACE_LOOKUP_SUPPORT_CHANNEL, iface_number);
 
-    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
+    ptr_cmd_active_wlan_lookup1 = popen(look_cmd1, "r");
 
     while (fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup)) {
-        printf("%d\n", string_to_int(iface));
+        fgets(iface1, IFACE_INFO, ptr_cmd_active_wlan_lookup1);
+        ptr_channel_freq = (struct _channel_freq *)calloc(1, sizeof(struct _channel_freq));
+        ptr_channel_freq->freq = string_to_float(iface);
+        //printf("%e\n", string_to_float(iface));
+        ptr_channel_freq->channel = string_to_float(iface1);
+        queue_push(&wireless_iface_iwlist_node->ptr_support_channel_freq, &ptr_channel_freq->iface_node);
     }
-
+    
     /* Txpower(dbm) */
     memset(look_cmd, 0, sizeof(look_cmd) / sizeof(look_cmd[0]));
     sprintf(look_cmd, IFACE_LOOKUP_TXPOWER_DBM, iface_number);
