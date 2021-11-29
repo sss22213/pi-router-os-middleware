@@ -3,6 +3,7 @@
 #include "list.h"
 #include "queue.h"
 #include "tree.h"
+#include "map.h"
 #include "wireless.h"
 #include "console.h"
 #include "transfer_socket.h"
@@ -20,14 +21,29 @@
  *      cur_txpower
  *      
  * @param argc 
- * @param argv 
+ * @param argv
  * @return int
  */
 
 int main(int argc, char **argv)
 {
-    char str[] = "avail_channel -i 2";
-    console_read(str);
+    struct _console console;
+    console_excute_array(&console, argc, argv);
+    
+    /*
+    struct _console console;
+    uint8_t a[] = "Avail_freq";
+    insert_console(&console, a);
+    */
+    /*
+    INIT_MAP(new_map, 20);
+
+    map_insert(&new_map, "avail_channel", 0);
+    map_insert(&new_map, "avail_freq", 0);
+    */
+
+    //char str[] = "avail_channel -i 2";
+    //console_read(str);
     // Initialize socket
     //INIT_TRANSFER_SOCKET(new_socket, 8232);
 

@@ -1,9 +1,9 @@
 CC := gcc
-CFLAGS := -g -std=gnu11 -Werror
+CFLAGS := -g -std=gnu11 -Werror -pthread
 
 all: clean main
 
-main: main.o list.o queue.o tree.o wireless.o console.o transfer_socket.o
+main: main.o list.o queue.o tree.o wireless.o console.o transfer_socket.o map.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 main.o: main.c
@@ -28,6 +28,9 @@ console.o: console.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 transfer_socket.o: transfer_socket.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
+map.o: map.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 clean:
