@@ -57,17 +57,17 @@ void find_all_wireless_iface(struct _queue*);
 void find_all_wireless_action_iface(struct _queue*);
 struct _wireless_iface_iwlist_node *_find_support_freq_channel(int);
 
-void find_support_channel(void*, void*);
+void find_support_channel(void*, struct _queue*);
 
-void find_support_freq(void*, void*);
+void find_support_freq(void*, struct _queue*);
 
-void find_support_bitrate(void*, void*);
+void find_support_bitrate(void*, struct _queue*);
 
-void find_support_txpower(void*, void*);
+void find_support_txpower(void*, struct _queue*);
 
-void find_available_channel(void*, void*);
+void find_available_channel(void*, struct _queue*);
 
-void find_available_freq(void*, void*);
+void find_available_freq(void*, struct _queue*);
 
 
 #endif

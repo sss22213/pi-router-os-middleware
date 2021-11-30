@@ -2,13 +2,15 @@
 
 static char cmd_prefix[] = {'i'};
 
+// N * MAXIMUM_OPCODE_PREFIX_LENGTH + M
 static char opcode_prefix[MAXIMUM_OPCODE_PREFIX_LENGTH][MAXIMUM_OPCODE_PREFIX_STRING_LENGTH] = {"cur", "avail"};
 
 static char opcode_postfix[MAXIMUM_OPCODE_POSTFIX_LENGTH][MAXIMUM_OPCODE_POSTFIX_STRING_LENGTH] = {"channel", "freq", "bitrate", "txpower"};
 
-static void (*ptr_excute_func[MAXIMUM_OPCODE_PREFIX_LENGTH*MAXIMUM_OPCODE_POSTFIX_LENGTH])(void*, void *) = \
-                        {find_support_channel, find_support_freq, find_support_bitrate, find_support_txpower,\
-                            find_available_channel, find_available_freq};
+static void (*ptr_excute_func[MAXIMUM_OPCODE_PREFIX_LENGTH*MAXIMUM_OPCODE_POSTFIX_LENGTH])(void*, struct _queue*) = {\
+                        find_support_channel, find_support_freq,\
+                        find_support_bitrate, find_support_txpower,\
+                        find_available_channel, find_available_freq};
 
 static inline void _insert(struct _console *console, char *opcode) 
 {
@@ -61,15 +63,62 @@ void insert_console(struct _console *console, const char *opcode)
 
 void console_excute_array(struct _console *console, int argc, char** opcode)
 {
-    int opcode_number = -1;
-    int interface_number = opcode[1][2];
+    char *token = NULL;
 
-    // Compare cmd_prefix with opcode
+    int idx = 0;
+
+    INIT_QUEUE(q1, l1);
+
+    // Interface
+    int interface_number = atoi(opcode[3]);
+
+    // Opcode
+    char ptr_opcode[MAXIMUM_OPCODE_PREFIX_STRING_LENGTH+MAXIMUM_OPCODE_POSTFIX_STRING_LENGTH] = {0};
+   
+    // Prefix opcode
+    char prefix_opcode[MAXIMUM_OPCODE_PREFIX_STRING_LENGTH] = {0};
+
+    // Postfix opcode
+    char postfix_opcode[MAXIMUM_OPCODE_POSTFIX_STRING_LENGTH] = {0};
+
+    int prefix_opcode_idx = -1;
+
+    int postfix_opcode_idx = -1;
+
+    strcpy(ptr_opcode, opcode[2]);
+   
+    token = strtok(ptr_opcode, "_");
+    strcpy(prefix_opcode, token);
+
+    token = strtok(NULL, "_");
+    strcpy(postfix_opcode, token);
+
+    for (idx = 0; idx < MAXIMUM_OPCODE_PREFIX_LENGTH; idx++) {
+        if (!strcmp(prefix_opcode, opcode_prefix[idx])) {
+            prefix_opcode_idx = idx;
+        }
+    }
+
+    for (idx = 0; idx < MAXIMUM_OPCODE_POSTFIX_LENGTH; idx++) {
+        if (!strcmp(postfix_opcode, opcode_postfix[idx])) {
+            postfix_opcode_idx = idx;
+        }
+    }
+
+    ptr_excute_func[prefix_opcode_idx*2+postfix_opcode_idx](&interface_number, &q1);
+
+    
+
+    /* Compare cmd_prefix with opcode
     for (int cmd_prefix_idx = 0; cmd_prefix_idx < sizeof(cmd_prefix)/sizeof(cmd_prefix[0]); cmd_prefix_idx++) {
         if (opcode_number == cmd_prefix[cmd_prefix_idx]) {
             opcode_number = cmd_prefix_idx;
         }
     }
+    */
+
+
+    
     
 
 

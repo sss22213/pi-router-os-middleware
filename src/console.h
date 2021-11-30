@@ -2,6 +2,7 @@
 #define __CONSOLE_H__
 #include <string.h>
 #include <stdio.h>
+#include "queue.h"
 #include "wireless.h"
 #include "map.h"
 

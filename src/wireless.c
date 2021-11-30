@@ -244,32 +244,32 @@ void find_all_wireless_iface(struct _queue *wireless_queue)
     }
 }
 
-void find_support_channel(void *arg, void *ret)
+void find_support_channel(void *arg, struct _queue *ret)
 {
     struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
 }
 
-void find_support_freq(void *arg, void *ret)
+void find_support_freq(void *arg, struct _queue *ret)
 {
     struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
 }
 
-void find_support_bitrate(void *arg, void *ret)
+void find_support_bitrate(void *arg, struct _queue *ret)
 {
     struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
 }
 
-void find_support_txpower(void *arg, void *ret)
+void find_support_txpower(void *arg, struct _queue *ret)
 {
     struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
 }
 
-void find_available_channel(void *arg, void *ret)
+void find_available_channel(void *arg, struct _queue *ret)
 {
     struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
 }
 
-void find_available_freq(void *arg, void *ret)
+void find_available_freq(void *arg, struct _queue *ret)
 {
     struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
 }
