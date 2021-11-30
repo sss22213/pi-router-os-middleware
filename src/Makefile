@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -g -std=gnu11 -Werror -pthread
+CFLAGS := -g -std=gnu11 -Werror
 
 all: clean main
 

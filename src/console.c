@@ -85,7 +85,7 @@ void console_excute_array(struct _console *console, int argc, char** opcode)
 
     int postfix_opcode_idx = -1;
 
-    strcpy(ptr_opcode, opcode[2]);
+    strcpy(ptr_opcode, opcode[1]);
    
     token = strtok(ptr_opcode, "_");
     strcpy(prefix_opcode, token);
@@ -106,21 +106,4 @@ void console_excute_array(struct _console *console, int argc, char** opcode)
     }
 
     ptr_excute_func[prefix_opcode_idx*2+postfix_opcode_idx](&interface_number, &q1);
-
-    
-
-    /* Compare cmd_prefix with opcode
-    for (int cmd_prefix_idx = 0; cmd_prefix_idx < sizeof(cmd_prefix)/sizeof(cmd_prefix[0]); cmd_prefix_idx++) {
-        if (opcode_number == cmd_prefix[cmd_prefix_idx]) {
-            opcode_number = cmd_prefix_idx;
-        }
-    }
-    */
-
-
-    
-    
-
-
-    //_excute_array(console, opcode, interface);
 }
