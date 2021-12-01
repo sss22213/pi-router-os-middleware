@@ -28,7 +28,16 @@
 int main(int argc, char **argv)
 {
     struct _console console;
-    console_excute_array(&console, argc, argv);
+    INIT_QUEUE(q1, l1);
+    console_excute_array(&console, argc, argv, &q1);
+
+    struct _node *ptr_node = NULL;
+    /*
+    QUEUE_FOR_EACH(ptr_node, &new_wireless_node->ptr_support_channel_freq) {
+        printf("%d\n", CONTAINER_OF(ptr_node, struct _channel_freq, iface_node)->channel);
+        printf("%e\n", CONTAINER_OF(ptr_node, struct _channel_freq, iface_node)->freq);
+    }
+    */
     
     /*
     struct _console console;

@@ -1,37 +1,26 @@
 CC := gcc
-CFLAGS := -g -std=gnu11 -Werror
+TOPDIR := $(CURDIR)
+CORE_DIR := $(TOPDIR)/Core
+BUILD_DIR := $(TOPDIR)/Build
 
-all: clean main
+CFLAGS := -g -Wall -std=c11 -pthread
 
-main: main.o list.o queue.o tree.o wireless.o console.o transfer_socket.o map.o
-	$(CC) $(CFLAGS) -o $@ $^
+all: clean build
 
-main.o: main.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-pi_uci.o: pi_uci.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-list.o: list.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-queue.o: queue.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-tree.o: tree.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-wireless.o: wireless.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-console.o: console.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-transfer_socket.o: transfer_socket.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-
-map.o: map.c
-	$(CC) $(CFLAGS) -c $^ -o $@
+build:
+	mkdir $(BUILD_DIR)
+	$(MAKE) -C $(CORE_DIR) \
+				CROSS_COMPILE=$(CC)\
+				TOPDIR=$(TOPDIR) \
+				CORE_DIR=$(CORE_DIR)\
+				BUILD_DIR=$(BUILD_DIR)
 
 clean:
-	rm -f *.o main
+	rm -rf $(BUILD_DIR)
+
+.PHONY: all clean
+
+
+
+
+

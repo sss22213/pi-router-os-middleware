@@ -61,13 +61,11 @@ void insert_console(struct _console *console, const char *opcode)
     _insert(console, (char*)opcode);
 }
 
-void console_excute_array(struct _console *console, int argc, char** opcode)
+void console_excute_array(struct _console *console, int argc, char** opcode, struct _queue *ret)
 {
     char *token = NULL;
 
     int idx = 0;
-
-    INIT_QUEUE(q1, l1);
 
     // Interface
     int interface_number = atoi(opcode[3]);
@@ -105,5 +103,5 @@ void console_excute_array(struct _console *console, int argc, char** opcode)
         }
     }
 
-    ptr_excute_func[prefix_opcode_idx*2+postfix_opcode_idx](&interface_number, &q1);
+    ptr_excute_func[prefix_opcode_idx*2+postfix_opcode_idx](&interface_number, ret);
 }

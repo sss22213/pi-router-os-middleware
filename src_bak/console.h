@@ -33,6 +33,6 @@ struct _console {
 
 void init_console(struct _console*);
 void insert_console(struct _console*, const char*);
-void console_excute_array(struct _console *console, int, char**);
+void console_excute_array(struct _console *console, int, char**, struct _queue*);
 
 #endif
