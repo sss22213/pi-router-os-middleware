@@ -1,24 +1,28 @@
 CC := gcc
 TOPDIR := $(CURDIR)
-CORE_DIR := $(TOPDIR)/Core
-BUILD_DIR := $(TOPDIR)/Build
+COREDIR := $(TOPDIR)/Core
+BUILDDIR := $(TOPDIR)/Build
+SOURCE := $(wildcard $(COREDIR)/*/src/*)
+OBJ := $(patsubst %.c,%.o,$(SOURCE))
+INC := $(addprefix -I,$(wildcard $(COREDIR)/*/inc))
 
-CFLAGS := -g -Wall -std=c11 -pthread
+CFLAGS := -g -std=gnu11 -pthread $(INC)
 
-all: clean build
+all: clean prepare build
 
-build:
-	mkdir $(BUILD_DIR)
-	$(MAKE) -C $(CORE_DIR) \
-				CROSS_COMPILE=$(CC)\
-				TOPDIR=$(TOPDIR) \
-				CORE_DIR=$(CORE_DIR)\
-				BUILD_DIR=$(BUILD_DIR)
+prepare:
+	mkdir $(BUILDDIR)
+
+build: $(OBJ)
+
+%.o: %.c
+	$(CC) -c $< -o $@ $(CFLAGS)
+	mv $@ $(BUILDDIR)/$(notdir $@)
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILDDIR)
 
-.PHONY: all clean
+.PHONY: clean prepare build buildmain
 
 
 
