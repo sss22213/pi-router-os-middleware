@@ -5,10 +5,11 @@ BUILDDIR := $(TOPDIR)/Build
 SOURCE := $(wildcard $(COREDIR)/*/src/*)
 OBJ := $(patsubst %.c,%.o,$(SOURCE))
 INC := $(addprefix -I,$(wildcard $(COREDIR)/*/inc))
+BUILDOBJ := $(wildcard $(BUILDDIR)/*.o)
 
-CFLAGS := -g -std=gnu11 -pthread $(INC)
+CFLAGS := -g -std=gnu11 $(INC) -lmosquitto
 
-all: clean prepare build
+all: clean prepare build main
 
 prepare:
 	mkdir $(BUILDDIR)
@@ -19,10 +20,14 @@ build: $(OBJ)
 	$(CC) -c $< -o $@ $(CFLAGS)
 	mv $@ $(BUILDDIR)/$(notdir $@)
 
+main: $(BUILDOBJ)
+	$(CC) -o $@ main.c $? $(CFLAGS)
+
 clean:
 	rm -rf $(BUILDDIR)
+	rm -f main
 
-.PHONY: clean prepare build buildmain
+.PHONY: clean prepare build
 
 
 
