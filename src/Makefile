@@ -7,7 +7,7 @@ OBJ := $(patsubst %.c,%.o,$(SOURCE))
 INC := $(addprefix -I,$(wildcard $(COREDIR)/*/inc))
 BUILDOBJ := $(wildcard $(BUILDDIR)/*.o)
 
-CFLAGS := -g -std=gnu11 $(INC) -lmosquitto
+CFLAGS := -g -std=gnu11 $(INC) -lpaho-mqtt3a -lpaho-mqtt3c
 
 all: clean prepare build main
 
