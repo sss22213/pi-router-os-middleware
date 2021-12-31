@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "pi_uci.h": "c",
+        "stdio.h": "c",
+        "string": "c",
+        "typeinfo": "c",
+        "array": "c",
+        "functional": "c",
+        "istream": "c",
+        "ostream": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
+    }
+}
