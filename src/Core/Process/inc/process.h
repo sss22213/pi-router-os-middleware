@@ -3,7 +3,7 @@
 #include <cjson/cJSON.h>
 #include <string.h>
 
-#include "pi_router_os_request_syscall.h"
+//#include "pi_router_os_request_syscall.h"
 
 typedef enum {
     SYSCALL_PI_ROUTER_OS_VERSION = 0x00,

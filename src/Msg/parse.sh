@@ -5,6 +5,9 @@ function_generate_config() {
 }
 
 function_msg_var_to_c_style() {
+    var_name=()
+    var_type=()
+    var_subscript=()
     while IFS= read -r line;
     do
         prefix=```echo ${line} | awk '{print $1}'```

@@ -14,11 +14,14 @@ void msgarrive_event(void *context, char *topicName, int topicLen, MQTTClient_me
     cJSON *new_msg_json = cJSON_Parse(message->payload);
 
     topic_name = cJSON_GetObjectItemCaseSensitive(new_msg_json, "type_name");
-
+    
     if (topic_name->valuestring != NULL) {
+        printf("%s\n", topic_name->valuestring);
+        /*
         if (strcmp(topic_name->valuestring, "PI_ROUTER_OS_VERSION") == 0) {
             printf("YES\n");
         }
+        */
     }
     
 
@@ -49,6 +52,7 @@ void msgarrive_event(void *context, char *topicName, int topicLen, MQTTClient_me
 int main(int argc, char **argv)
 {
     char string[12000];
+    char string1[12000];
     struct _pi_router_os_version pi_router_os_version; 
     pi_router_os_version.test1=1;
     pi_router_os_version.test2=3;
@@ -57,7 +61,13 @@ int main(int argc, char **argv)
     strcpy(pi_router_os_version.test, "You");
     pi_router_os_version_message_pack("test", pi_router_os_version, string);
 
-   
+    //get_find_support_freq_channel(0, string1);
+
+    get_all_wireless_action_iface(string1);
+    
+    printf("%s\n", string1);
+    
+    //struct _wireless_iface_iwlist_node *ptr_find_support_freq_channel = _find_support_freq_channel(0);
     /*
     char *string = NULL;
     cJSON *monitor = cJSON_CreateObject();
@@ -71,7 +81,7 @@ int main(int argc, char **argv)
     mqtt_client_subscribe(&new_mqtt_client, "Testx");
 
     while(1) {
-        mqtt_client_publish(&new_mqtt_client, "Testx", string);
+        mqtt_client_publish(&new_mqtt_client, "Testx", string1);
         sleep(1);
     }
 

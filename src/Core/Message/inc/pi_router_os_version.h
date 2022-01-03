@@ -15,13 +15,6 @@
         {PI_ROUTER_OS_VERSION_ITEM}
 
 struct _pi_router_os_version{
-	int syscall_number;
-	double arg1;
-	double arg2;
-	double arg3;
-	char arg4[50];
-	char arg5[50];
-	char arg6[50];
 	char test1;
 	int test2;
 	float test3[5];

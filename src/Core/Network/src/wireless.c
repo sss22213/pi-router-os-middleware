@@ -1,11 +1,14 @@
 #include "wireless.h"
 
 /* Command for lookup iface information */
-#define IFACE_LOOKUP_HWADDR_CMD "ifconfig | grep -A1 wlan%d | grep HWaddr | awk '{print $5}'"
+//#define IFACE_LOOKUP_HWADDR_CMD "ifconfig | grep -A1 wlan%d | grep HWaddr | awk '{print $5}'"
+#define IFACE_LOOKUP_HWADDR_CMD "ifconfig | grep -A4 wlan%d | grep ether | awk '{print $2}'"
 #define IFACE_LOOKUP_IPV4_CMD "ifconfig | grep -A1 wlan%d | grep inet | awk '{print $2}' | sed 's/addr://g'"
-#define IFACE_LOOKUP_BCAST_CMD "ifconfig | grep -A1 wlan%d | grep Bcast | awk '{print $3}' | sed 's/Bcast://g'"
-#define IFACE_LOOKUP_MASK_CMD "ifconfig | grep -A1 wlan%d | grep Mask | awk '{print $4}' | sed 's/Mask://g'"
-#define IFACE_LOOKUP_ACTIVE_IFACE_CMD "ifconfig | grep wlan* | awk '{print $1}' | sed 's/wlan//g'"
+//#define IFACE_LOOKUP_BCAST_CMD "ifconfig | grep -A1 wlan%d | grep Bcast | awk '{print $3}' | sed 's/Bcast://g'"
+#define IFACE_LOOKUP_BCAST_CMD "ifconfig | grep -A1 wlan%d | grep broadcast | awk '{print $6}'"
+//#define IFACE_LOOKUP_MASK_CMD "ifconfig | grep -A1 wlan%d | grep Mask | awk '{print $4}' | sed 's/Mask://g'"
+#define IFACE_LOOKUP_MASK_CMD  "ifconfig | grep -A1 wlan%d | grep netmask | awk '{print $4}'"
+#define IFACE_LOOKUP_ACTIVE_IFACE_CMD "ifconfig | grep wlan* | awk '{print $1}' | sed -E 's/[wlan]|[:]//g'"
 #define IFACE_LOOKUP_SUPPORT_FREQ  "iwlist wlan%d channel | awk '{print $4}' | grep '[[:digit:]]'"
 #define IFACE_LOOKUP_SUPPORT_CHANNEL  "iwlist wlan%d channel | awk '{print $2}' | grep '[[:digit:]]' | sed '1d;$d'"
 #define IFACE_LOOKUP_TXPOWER_DBM "iwlist wlan%d txpower | grep mW | sed -E 's/[=]|[()]|mW/ /g' | awk '{print $3}'"
@@ -13,6 +16,7 @@
 #define IFACE_LOOKUP_BITRATE "iwlist wlan%d bitrate | grep Mb/s | sed 's/[:]/ /g' | awk '{print $4}'"
 #define IFACE_LOOKUP_CURRENT_FREQUENCY "iwlist wlan%d channel | grep 'Current Frequency' | sed -E 's/[:]|[()]/ /g' | awk '{print $3}'"
 #define IFACE_LOOKUP_CURRENT_CHANNEL "iwlist wlan%d channel | grep 'Current Frequency' | sed -E 's/[:]|[()]/ /g' | awk '{print $6}'"
+
 
 static inline int string_to_int(char *str)
 {
@@ -56,6 +60,38 @@ static inline float string_to_float(char *str)
     return result;
 }
 
+static inline int number_2(int num)
+{
+    int res = 0;
+
+    while (num) {
+        if(num & 0x01) {
+            res++;
+        }
+        
+        num = num >> 1;
+    }
+
+    return res;
+}
+
+static inline int netmask_to_number(char *netmask)
+{
+    char *token = NULL;
+
+    int mask_i = 0;
+
+    token = strtok(netmask, ".");
+
+    while( token != NULL ) {
+        mask_i+=number_2(string_to_int(token));
+        //printf("%d\n", number_2(string_to_int(token)));
+        //printf( "%e,", log2(string_to_int(token)));
+        token = strtok(NULL, ".");
+    }
+
+    return mask_i;
+}
 
 struct _wireless_iface_iwlist_node *_find_support_freq_channel(int iface_number)
 {
@@ -201,8 +237,19 @@ static inline struct _wireless_iface_active_node *find_iface_info(int iface_numb
 
     strcpy(wireless_iface_active_node->ip_addr, iface);
 
+    /* Netmask */
+    memset(look_cmd, 0, sizeof(look_cmd));
+    memset(iface, 0, sizeof(iface));
+
+    sprintf(look_cmd, IFACE_LOOKUP_MASK_CMD, iface_number);
+
+    ptr_cmd_active_wlan_lookup = popen(look_cmd, "r");
+
+    fgets(iface, IFACE_INFO, ptr_cmd_active_wlan_lookup);
+
+    wireless_iface_active_node->mask = netmask_to_number(iface);
+
     return wireless_iface_active_node;
-    
 }
 
 void find_all_wireless_action_iface(struct _queue *iface_queue)
@@ -244,32 +291,70 @@ void find_all_wireless_iface(struct _queue *wireless_queue)
     }
 }
 
-void find_support_channel(void *arg, struct _queue *ret)
+void get_find_support_freq_channel(int iface, char *ret_json)
 {
-    struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
+    struct _wireless_iface_iwlist_node *ptr_find_support_freq_channel = _find_support_freq_channel(iface);
+
+    struct _node *ptr_iface_node = NULL;
+
+    struct _pi_router_os_support_freq_channel pi_router_os_support_freq_channel;
+    memset(pi_router_os_support_freq_channel.channel, 0, sizeof(pi_router_os_support_freq_channel.channel[0])*50);
+    memset(pi_router_os_support_freq_channel.freq, 0, sizeof(pi_router_os_support_freq_channel.freq[0])*50);
+
+    float *ptr_freq = &pi_router_os_support_freq_channel.freq;
+    int *ptr_channel = &pi_router_os_support_freq_channel.channel;
+    // Support freq channel
+    QUEUE_FOR_EACH(ptr_iface_node, &ptr_find_support_freq_channel->ptr_support_channel_freq) {
+        *ptr_freq = CONTAINER_OF(ptr_iface_node, struct _channel_freq, iface_node)->freq;
+        *ptr_channel = CONTAINER_OF(ptr_iface_node, struct _channel_freq, iface_node)->channel;
+        ptr_freq++;
+        ptr_channel++;
+    }
+
+    pi_router_os_support_freq_channel_message_pack("PI", pi_router_os_support_freq_channel, ret_json);
 }
 
-void find_support_freq(void *arg, struct _queue *ret)
+void get_all_wireless_action_iface(char *ret_json)
 {
-    struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
-}
+    INIT_QUEUE(iface_queue, iface_list);
 
-void find_support_bitrate(void *arg, struct _queue *ret)
-{
-    struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
-}
+    struct _node *ptr_iface_node = NULL;
 
-void find_support_txpower(void *arg, struct _queue *ret)
-{
-    struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
-}
+    find_all_wireless_action_iface(&iface_queue);
 
-void find_available_channel(void *arg, struct _queue *ret)
-{
-    struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
-}
+    struct _pi_router_os_support_action_iface pi_router_os_support_action_iface;
 
-void find_available_freq(void *arg, struct _queue *ret)
-{
-    struct _wireless_iface_iwlist_node *find_support_freq_channel = _find_support_freq_channel(*(int*)arg);
+    cJSON *action_iface_msg = cJSON_CreateObject();
+
+    cJSON *type_name = cJSON_CreateString("PI_ROUTER_OS_SUPPORT_ACTION_IFACE_ARRAY");
+	cJSON_AddItemToObject(action_iface_msg, "type_name", type_name);
+
+
+    QUEUE_FOR_EACH(ptr_iface_node, &iface_queue) {
+        pi_router_os_support_action_iface.iface = \
+            CONTAINER_OF(ptr_iface_node, struct _wireless_iface_active_node, iface_node)->iface;
+
+        memcpy(pi_router_os_support_action_iface.ip_addr, \
+                CONTAINER_OF(ptr_iface_node, struct _wireless_iface_active_node, iface_node)->ip_addr, \
+                sizeof(pi_router_os_support_action_iface.ip_addr[0])*15);
+
+        memcpy(pi_router_os_support_action_iface.broadcast, \
+                CONTAINER_OF(ptr_iface_node, struct _wireless_iface_active_node, iface_node)->broadcast, \
+                sizeof(pi_router_os_support_action_iface.broadcast[0])*15);
+
+        memcpy(pi_router_os_support_action_iface.hwaddr, \
+                CONTAINER_OF(ptr_iface_node, struct _wireless_iface_active_node, iface_node)->hwaddr, \
+                sizeof(pi_router_os_support_action_iface.hwaddr[0])*18);
+        
+        pi_router_os_support_action_iface.mask = \
+            CONTAINER_OF(ptr_iface_node, struct _wireless_iface_active_node, iface_node)->mask;
+
+        pi_router_os_support_action_iface_message_pack("PI", pi_router_os_support_action_iface, ret_json);
+
+        cJSON *pi_router_os_support_action_iface_msg = cJSON_CreateRaw(ret_json);
+        cJSON_AddItemToObject(action_iface_msg, "field", pi_router_os_support_action_iface_msg);
+    }
+
+    strcpy(ret_json, cJSON_Print(action_iface_msg));
+    cJSON_Delete(action_iface_msg);
 }

@@ -3,7 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <cjson/cJSON.h>
+#include <math.h>
 #include "queue.h"
+#include "pi_router_os_support_freq_channel.h"
+#include "pi_router_os_support_action_iface.h"
 
 #define INIT_WIRELESS_IFACE(WIRELESS_IFACE_NAME) \
           struct _wireless_iface (WIRELESS_IFACE_NAME) = {0, {0}, {0}, {0}, 0, wireless_stop, NULL}
@@ -57,17 +61,7 @@ void find_all_wireless_iface(struct _queue*);
 void find_all_wireless_action_iface(struct _queue*);
 struct _wireless_iface_iwlist_node *_find_support_freq_channel(int);
 
-void find_support_channel(void*, struct _queue*);
-
-void find_support_freq(void*, struct _queue*);
-
-void find_support_bitrate(void*, struct _queue*);
-
-void find_support_txpower(void*, struct _queue*);
-
-void find_available_channel(void*, struct _queue*);
-
-void find_available_freq(void*, struct _queue*);
-
+void get_find_support_freq_channel(int, char*);
+void get_all_wireless_action_iface(char*);
 
 #endif

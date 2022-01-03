@@ -5,6 +5,10 @@
         "in.h": "c",
         "mqtt_client.h": "c",
         "cjson.h": "c",
-        "queue.h": "c"
-    }
+        "queue.h": "c",
+        "pi_router_os_support_action_iface.h": "c",
+        "sstream": "c",
+        "typeinfo": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

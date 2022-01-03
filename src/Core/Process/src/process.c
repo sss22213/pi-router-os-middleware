@@ -8,7 +8,7 @@ static inline void _process(char *topicName, char *msg_from_mqtt)
 
     cJSON *type = NULL;
 
-    cJSON *syscall_number = NULL:
+    cJSON *syscall_number = NULL;
 
     if (strcmp(topicName, REQUEST_SYSCALL_TOPIC) != 0) {
         return;
