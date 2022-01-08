@@ -31,6 +31,8 @@ struct _map {
 };
 
 void init_map(struct _map*, int);
-COLLISION_ITEM_MAP map_insert(struct _map*, const char*, int);
+void Deinit_map(struct _map*);
+struct _map_item find_item_map(struct _map*, int);
+COLLISION_ITEM_MAP insert_map(struct _map*, const char*, int);
 
 #endif

@@ -16,6 +16,11 @@
                             };\
                             mqtt_client_init(&MQTT_CLIENT_NAME, ADDRESS, CLIENT_ID);
 
+#define INIT_MQTT_CLIENT_PTR(PTR_MQTT_CLIENT, ADDRESS, CLIENT_ID) \
+                            (PTR_MQTT_CLIENT)->ptr_delivered_event = delivered_event;\
+                            (PTR_MQTT_CLIENT)->ptr_msgarrive_event = msgarrive_event;\
+                            (PTR_MQTT_CLIENT)->ptr_connlost_event = connlost_event;\
+                            mqtt_client_init((PTR_MQTT_CLIENT), ADDRESS, CLIENT_ID);
 
 struct _mqtt_client {
     MQTTClient client;

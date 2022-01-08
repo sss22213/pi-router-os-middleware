@@ -42,7 +42,7 @@ static inline void _remove(struct _map *map, const char *key)
     map->_map_item_list[hash_key].exist_item_flag = ITEM_NOT_EXIST;
 }
 
-COLLISION_ITEM_MAP map_insert(struct _map *map, const char *key, int value)
+COLLISION_ITEM_MAP insert_map(struct _map *map, const char *key, int value)
 {
     return _insert(map, key, value);
 }
@@ -55,4 +55,15 @@ void init_map(struct _map *map, int length)
     for (int map_item_idx = 0; map_item_idx < length; map_item_idx++) {
         map->_map_item_list[map_item_idx].exist_item_flag = ITEM_NOT_EXIST;
     }
+}
+
+void Deinit_map(struct _map *map)
+{
+    free(map->_map_item_list);
+}
+
+struct _map_item find_item_map(struct _map *map, int key)
+{
+    uint32_t hash_key = _to_hash_function(map, key);
+    return map->_map_item_list[hash_key];
 }

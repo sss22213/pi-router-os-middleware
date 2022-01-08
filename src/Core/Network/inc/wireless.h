@@ -61,6 +61,7 @@ void find_all_wireless_iface(struct _queue*);
 void find_all_wireless_action_iface(struct _queue*);
 struct _wireless_iface_iwlist_node *_find_support_freq_channel(int);
 
+// Json
 void get_find_support_freq_channel(int, char*);
 void get_all_wireless_action_iface(char*);
 

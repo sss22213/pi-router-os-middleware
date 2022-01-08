@@ -2,6 +2,8 @@
 #include "mqtt_client.h"
 #include "wireless.h"
 #include "message.h"
+#include "sys_init.h"
+#include <stdio.h>
 #include <unistd.h>
 #include "pi_router_os_version.h"
 
@@ -24,10 +26,6 @@ void msgarrive_event(void *context, char *topicName, int topicLen, MQTTClient_me
         */
     }
     
-
-
-
-
     /* printf("%s\n",topicName);
     pi_router_os_version_message_unpack(message->payload, &ret);
     
@@ -48,42 +46,12 @@ void msgarrive_event(void *context, char *topicName, int topicLen, MQTTClient_me
  * 
  * @return int
  */
-
 int main(int argc, char **argv)
 {
-    char string[12000];
-    char string1[12000];
-    struct _pi_router_os_version pi_router_os_version; 
-    pi_router_os_version.test1=1;
-    pi_router_os_version.test2=3;
-    pi_router_os_version.test3[0] = 4;
-    pi_router_os_version.test4[0] = 5;
-    strcpy(pi_router_os_version.test, "You");
-    pi_router_os_version_message_pack("test", pi_router_os_version, string);
-
-    //get_find_support_freq_channel(0, string1);
-
-    get_all_wireless_action_iface(string1);
-    
-    printf("%s\n", string1);
-    
-    //struct _wireless_iface_iwlist_node *ptr_find_support_freq_channel = _find_support_freq_channel(0);
-    /*
-    char *string = NULL;
-    cJSON *monitor = cJSON_CreateObject();
-    cJSON *name = cJSON_CreateString("Awesome 4K");
-    cJSON_AddItemToObject(monitor, "name", name);
-    string = cJSON_Print(monitor);
-    cJSON_Delete(monitor);
-    */
-
-    INIT_MQTT_CLIENT(new_mqtt_client, "tcp://127.0.0.1:1883", "system");
+    sys_init();
     mqtt_client_subscribe(&new_mqtt_client, "Testx");
 
-    while(1) {
-        mqtt_client_publish(&new_mqtt_client, "Testx", string1);
-        sleep(1);
-    }
+    while(1);
 
     return 0;
 }

@@ -2,18 +2,10 @@
 #define __PROCESS_H__
 #include <cjson/cJSON.h>
 #include <string.h>
+#include "map.h"
 
-//#include "pi_router_os_request_syscall.h"
-
-typedef enum {
-    SYSCALL_PI_ROUTER_OS_VERSION = 0x00,
-    SYSCALL_NETWORK_FIND_INTERFACE = 0x01,
-    SYSCALL_NETWORK_FIND_ACTIVE_INTERFACE = 0x02,
-    SYSCALL_NETWORK_FIND_SUPPORT_FREQUENCY = 0x03,
-    SYSCALL_NETWORK_FIND_SUPPORT_BITRATE = 0x04,
-    SYSCALL_NETWORK_FIND_SUPPORT_TXPOWER = 0x06,
-    SYSCALL_NETWORK_AVAILABLE_CHANNEL = 0x07,
-    SYSCALL_NETWORK_SUPPORT_FREQUENCY = 0x08,
-} SYSCALL_NUMBER;
+struct _table_process {
+    struct _map func_map;
+};
 
 #endif

@@ -9,7 +9,7 @@ INC := $(addprefix -I,$(wildcard $(COREDIR)/*/inc))
 INCMSG:=-I$(TOPDIR)/Msg/inc
 BUILDOBJ := $(wildcard $(BUILDDIR)/*.o)
 
-CFLAGS := -g -std=gnu11 $(INC) $(INCMSG) -lpaho-mqtt3a -lpaho-mqtt3c -lcjson -lm
+CFLAGS := -g -std=gnu11 $(INC) $(INCMSG) -lpaho-mqtt3a -lpaho-mqtt3c -lcjson
 
 all: clean prepare build main
 
@@ -29,7 +29,7 @@ main: $(BUILDOBJ)
 clean:
 	rm -rf $(BUILDDIR)
 	rm -f $(MSGDIR)/src/*.c
-	rm -f $(MSGDIR)/src/*.h
+	rm -f $(MSGDIR)/inc/*.h
 	rm -f main
 
 .PHONY: clean prepare build
