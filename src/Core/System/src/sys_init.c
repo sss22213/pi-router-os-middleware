@@ -40,9 +40,11 @@ static inline void _init_timer()
 
     memcpy(&ptr_timer, &timer1, sizeof(struct _timer));
 
-    printf("Before delay 5 tick \n");
-    timer_delay(&ptr_timer, 5000);
-    printf("After delay 5 tick \n");
+    /*
+        printf("Before delay 5 tick \n");
+        timer_delay(&ptr_timer, 5000);
+        printf("After delay 5 tick \n");
+    */
 
     NEW_EVENT_TIMER(timer_event_1, EVENT_GET_NETWORK_INTERFACE_INFO, 1000);
     NEW_EVENT_TIMER(timer_event_2, EVENT_TEST1, 2000);

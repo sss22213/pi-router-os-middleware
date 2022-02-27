@@ -10,6 +10,8 @@
         "ostream": "c",
         "tuple": "c",
         "type_traits": "c",
-        "utility": "c"
+        "utility": "c",
+        "mqtt_client.h": "c",
+        "algorithm": "c"
     }
 }

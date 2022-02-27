@@ -4,6 +4,7 @@ void get_network_interface_info(void)
 {
     char string1[1200] = {0};
     get_all_wireless_action_iface(string1);
+    printf("%s\n", string1);
     mqtt_client_publish(&new_mqtt_client, "Testx", string1);
     printf("func1\n");
 }

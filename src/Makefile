@@ -15,7 +15,7 @@ all: clean prepare build main
 
 prepare:
 	mkdir $(BUILDDIR)
-	$(TOPDIR)/Msg/parse.sh
+	$(TOPDIR)/Msg/parse_c.sh
 
 build: $(OBJ)
 

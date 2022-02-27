@@ -21,7 +21,10 @@
         "stdio.h": "c",
         "wireless.h": "c",
         "event.h": "c",
-        "global.h": "c"
+        "global.h": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "fcntl.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
